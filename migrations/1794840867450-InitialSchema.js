@@ -1,0 +1,128 @@
+/**
+ * @typedef {import('typeorm').MigrationInterface} MigrationInterface
+ * @typedef {import('typeorm').QueryRunner} QueryRunner
+ */
+
+/**
+ * @class
+ * @implements {MigrationInterface}
+ */
+module.exports = class InitialSchema1794840867450 {
+  name = 'InitialSchema1794840867450'
+
+  /**
+     * @param {QueryRunner} queryRunner
+     */
+  async up (queryRunner) {
+    await queryRunner.query(`CREATE TABLE "cart_items" ("id" SERIAL NOT NULL, "user_id" uuid NOT NULL, "goods_id" integer NOT NULL, "count" integer NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "chk_cart_items_count" CHECK ("count" BETWEEN 1 AND 999), CONSTRAINT "PK_6fccf5ec03c172d27a28a82928b" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE UNIQUE INDEX "uq_cart_items_user_goods" ON "cart_items"  ("user_id", "goods_id") `)
+    await queryRunner.query(`CREATE INDEX "idx_cart_items_user_id" ON "cart_items"  ("user_id") `)
+    await queryRunner.query(`CREATE TABLE "users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "account_type" character varying(255) NOT NULL, "email" character varying(50) NOT NULL, "name" character varying(20), "status" boolean NOT NULL, "remark" character varying(255), "password" character varying(255) NOT NULL, "last_login_at" TIMESTAMP WITH TIME ZONE, "role_id" integer, "updated_by" uuid, CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "orders" ("id" uuid NOT NULL, "user_id" uuid NOT NULL, "updated_by" uuid, "total_price" integer NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL, "shipped_at" TIMESTAMP WITH TIME ZONE, "completed_at" TIMESTAMP WITH TIME ZONE, "cancelled_at" TIMESTAMP WITH TIME ZONE, "order_status_id" integer NOT NULL, CONSTRAINT "PK_710e2d4957aa5878dfe94e4ac2f" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "order_items" ("id" SERIAL NOT NULL, "order_id" uuid NOT NULL, "goods_id" integer NOT NULL, "price" integer NOT NULL, "count" integer NOT NULL, "total_price" integer NOT NULL, "updated_by" uuid, CONSTRAINT "PK_005269d8574e6fac0493715c308" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "order_statuses" ("id" SERIAL NOT NULL, "label" character varying(20) NOT NULL, CONSTRAINT "PK_76c6dc5bccb3ef1a4a8510cab3a" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "goods" ("id" SERIAL NOT NULL, "updated_by" uuid, "name" character varying(50) NOT NULL, "link" character varying(255) NOT NULL, "price" integer NOT NULL, "sale" integer NOT NULL, "stock" integer NOT NULL, "status" boolean NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_105e56546afe0823fa08df0baf7" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "goods_categories" ("id" SERIAL NOT NULL, "label" character varying(20) NOT NULL, CONSTRAINT "PK_e959dacf9eab16b145c6e6745ec" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "goods_category_maps" ("id" SERIAL NOT NULL, "goods_id" integer NOT NULL, "category_id" integer NOT NULL, CONSTRAINT "PK_c7d4ba3c18083288bcad959a69c" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "goods_tags" ("id" SERIAL NOT NULL, "label" character varying(10) NOT NULL, CONSTRAINT "PK_82e69ea4d3ca1d146946f2d3d19" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "goods_tags_maps" ("id" SERIAL NOT NULL, "goods_id" integer NOT NULL, "tags_id" integer NOT NULL, CONSTRAINT "PK_4d4f610a2e2682114ec6438df82" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "goods_imgs" ("id" SERIAL NOT NULL, "path" character varying(255) NOT NULL, CONSTRAINT "PK_779542512ae264a2325c116f111" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "goods_imgs_maps" ("id" SERIAL NOT NULL, "goods_id" integer NOT NULL, "goods_imgs_id" integer NOT NULL, "cover" boolean NOT NULL DEFAULT false, CONSTRAINT "PK_bc01de001a75f39e11b5bfa5323" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "goods_infos" ("id" SERIAL NOT NULL, "updated_by" uuid, "flavor" character varying(255) NOT NULL, "flavor_detail" character varying(255) NOT NULL, "roast" character varying(255) NOT NULL, "acidity" integer NOT NULL, "info" text NOT NULL, "goods_id" integer NOT NULL, CONSTRAINT "UQ_d5e263a4767dc11a8bf56b0af40" UNIQUE ("goods_id"), CONSTRAINT "REL_d5e263a4767dc11a8bf56b0af4" UNIQUE ("goods_id"), CONSTRAINT "PK_61d68bb20c925e19c49c4f75be7" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "banners" ("id" SERIAL NOT NULL, "img" character varying(255) NOT NULL, "name" character varying(20) NOT NULL, "link" character varying(50) NOT NULL, "status" boolean NOT NULL, "sequence" integer NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL, "updated_by" uuid, CONSTRAINT "PK_e9b186b959296fcb940790d31c3" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "news" ("id" SERIAL NOT NULL, "title" character varying(255) NOT NULL, "content" text NOT NULL, "img" character varying(255) NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL, "status" boolean NOT NULL, "updated_by" uuid, CONSTRAINT "PK_39a43dfcb6007180f04aff2357e" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "news_categories" ("id" SERIAL NOT NULL, "label" character varying(20) NOT NULL, CONSTRAINT "PK_20eed6c3ae534e7721fa44874a3" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "news_category_maps" ("id" SERIAL NOT NULL, "news_id" integer NOT NULL, "news_category_id" integer NOT NULL, CONSTRAINT "PK_c5f3d2b9ba9beec0445108500e2" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "roles" ("id" SERIAL NOT NULL, "label" character varying(20) NOT NULL, "updated_by" uuid, CONSTRAINT "PK_c1433d71a4838793a49dcad46ab" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "pages" ("id" SERIAL NOT NULL, "name" character varying(15) NOT NULL, "path" character varying(50) NOT NULL, "icon" character varying(50) NOT NULL, "sort" integer NOT NULL, "updated_by" uuid, CONSTRAINT "PK_8f21ed625aa34c8391d636b7d3b" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "permissions" ("id" SERIAL NOT NULL, "name" character varying(50) NOT NULL, "code" character varying(50) NOT NULL, "sort" integer NOT NULL, "page_id" integer NOT NULL, "updated_by" uuid, CONSTRAINT "UQ_8dad765629e83229da6feda1c1d" UNIQUE ("code"), CONSTRAINT "PK_920331560282b8bd21bb02290df" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`CREATE TABLE "role_permissions" ("id" SERIAL NOT NULL, "permission_id" integer NOT NULL, "role_id" integer NOT NULL, CONSTRAINT "PK_84059017c90bfcb701b8fa42297" PRIMARY KEY ("id"))`)
+    await queryRunner.query(`ALTER TABLE "cart_items" ADD CONSTRAINT "fk_cart_items_user_id_users" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "cart_items" ADD CONSTRAINT "fk_cart_items_goods_id_goods" FOREIGN KEY ("goods_id") REFERENCES "goods"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "fk_users_updated_by_users" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "fk_users_role_id_roles" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "orders" ADD CONSTRAINT "fk_orders_user_id_users" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "orders" ADD CONSTRAINT "fk_orders_updated_by_users" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "orders" ADD CONSTRAINT "fk_orders_order_status_id_order_statuses" FOREIGN KEY ("order_status_id") REFERENCES "order_statuses"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "order_items" ADD CONSTRAINT "fk_order_items_order_id_orders" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "order_items" ADD CONSTRAINT "fk_order_items_goods_id_goods" FOREIGN KEY ("goods_id") REFERENCES "goods"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "order_items" ADD CONSTRAINT "fk_order_items_updated_by_users" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "goods" ADD CONSTRAINT "fk_goods_updated_by_users" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "goods_category_maps" ADD CONSTRAINT "fk_goods_category_maps_goods_id_goods" FOREIGN KEY ("goods_id") REFERENCES "goods"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "goods_category_maps" ADD CONSTRAINT "fk_goods_category_maps_category_id_goods_categories" FOREIGN KEY ("category_id") REFERENCES "goods_categories"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "goods_tags_maps" ADD CONSTRAINT "fk_goods_tags_maps_goods_id_goods" FOREIGN KEY ("goods_id") REFERENCES "goods"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "goods_tags_maps" ADD CONSTRAINT "fk_goods_tags_maps_tags_id_goods_tags" FOREIGN KEY ("tags_id") REFERENCES "goods_tags"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "goods_imgs_maps" ADD CONSTRAINT "fk_goods_imgs_maps_goods_id_goods" FOREIGN KEY ("goods_id") REFERENCES "goods"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "goods_imgs_maps" ADD CONSTRAINT "fk_goods_imgs_maps_goods_imgs_id_goods_imgs" FOREIGN KEY ("goods_imgs_id") REFERENCES "goods_imgs"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "goods_infos" ADD CONSTRAINT "fk_goods_infos_updated_by_users" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "goods_infos" ADD CONSTRAINT "fk_goods_infos_goods_id_goods" FOREIGN KEY ("goods_id") REFERENCES "goods"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "banners" ADD CONSTRAINT "fk_banners_updated_by_users" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "news" ADD CONSTRAINT "fk_news_updated_by_users" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "news_category_maps" ADD CONSTRAINT "fk_news_category_maps_news_id_news" FOREIGN KEY ("news_id") REFERENCES "news"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "news_category_maps" ADD CONSTRAINT "fk_news_category_maps_news_category_id_news_categories" FOREIGN KEY ("news_category_id") REFERENCES "news_categories"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "roles" ADD CONSTRAINT "fk_roles_updated_by_users" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "pages" ADD CONSTRAINT "fk_pages_updated_by_users" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "permissions" ADD CONSTRAINT "fk_permissions_page_id_pages" FOREIGN KEY ("page_id") REFERENCES "pages"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "permissions" ADD CONSTRAINT "fk_permissions_updated_by_users" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "role_permissions" ADD CONSTRAINT "fk_role_permissions_permission_id_permissions" FOREIGN KEY ("permission_id") REFERENCES "permissions"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "role_permissions" ADD CONSTRAINT "fk_role_permissions_role_id_roles" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
+  }
+
+  /**
+     * @param {QueryRunner} queryRunner
+     */
+  async down (queryRunner) {
+    await queryRunner.query(`ALTER TABLE "role_permissions" DROP CONSTRAINT "fk_role_permissions_role_id_roles"`)
+    await queryRunner.query(`ALTER TABLE "role_permissions" DROP CONSTRAINT "fk_role_permissions_permission_id_permissions"`)
+    await queryRunner.query(`ALTER TABLE "permissions" DROP CONSTRAINT "fk_permissions_updated_by_users"`)
+    await queryRunner.query(`ALTER TABLE "permissions" DROP CONSTRAINT "fk_permissions_page_id_pages"`)
+    await queryRunner.query(`ALTER TABLE "pages" DROP CONSTRAINT "fk_pages_updated_by_users"`)
+    await queryRunner.query(`ALTER TABLE "roles" DROP CONSTRAINT "fk_roles_updated_by_users"`)
+    await queryRunner.query(`ALTER TABLE "news_category_maps" DROP CONSTRAINT "fk_news_category_maps_news_category_id_news_categories"`)
+    await queryRunner.query(`ALTER TABLE "news_category_maps" DROP CONSTRAINT "fk_news_category_maps_news_id_news"`)
+    await queryRunner.query(`ALTER TABLE "news" DROP CONSTRAINT "fk_news_updated_by_users"`)
+    await queryRunner.query(`ALTER TABLE "banners" DROP CONSTRAINT "fk_banners_updated_by_users"`)
+    await queryRunner.query(`ALTER TABLE "goods_infos" DROP CONSTRAINT "fk_goods_infos_goods_id_goods"`)
+    await queryRunner.query(`ALTER TABLE "goods_infos" DROP CONSTRAINT "fk_goods_infos_updated_by_users"`)
+    await queryRunner.query(`ALTER TABLE "goods_imgs_maps" DROP CONSTRAINT "fk_goods_imgs_maps_goods_imgs_id_goods_imgs"`)
+    await queryRunner.query(`ALTER TABLE "goods_imgs_maps" DROP CONSTRAINT "fk_goods_imgs_maps_goods_id_goods"`)
+    await queryRunner.query(`ALTER TABLE "goods_tags_maps" DROP CONSTRAINT "fk_goods_tags_maps_tags_id_goods_tags"`)
+    await queryRunner.query(`ALTER TABLE "goods_tags_maps" DROP CONSTRAINT "fk_goods_tags_maps_goods_id_goods"`)
+    await queryRunner.query(`ALTER TABLE "goods_category_maps" DROP CONSTRAINT "fk_goods_category_maps_category_id_goods_categories"`)
+    await queryRunner.query(`ALTER TABLE "goods_category_maps" DROP CONSTRAINT "fk_goods_category_maps_goods_id_goods"`)
+    await queryRunner.query(`ALTER TABLE "goods" DROP CONSTRAINT "fk_goods_updated_by_users"`)
+    await queryRunner.query(`ALTER TABLE "order_items" DROP CONSTRAINT "fk_order_items_updated_by_users"`)
+    await queryRunner.query(`ALTER TABLE "order_items" DROP CONSTRAINT "fk_order_items_goods_id_goods"`)
+    await queryRunner.query(`ALTER TABLE "order_items" DROP CONSTRAINT "fk_order_items_order_id_orders"`)
+    await queryRunner.query(`ALTER TABLE "orders" DROP CONSTRAINT "fk_orders_order_status_id_order_statuses"`)
+    await queryRunner.query(`ALTER TABLE "orders" DROP CONSTRAINT "fk_orders_updated_by_users"`)
+    await queryRunner.query(`ALTER TABLE "orders" DROP CONSTRAINT "fk_orders_user_id_users"`)
+    await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT "fk_users_role_id_roles"`)
+    await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT "fk_users_updated_by_users"`)
+    await queryRunner.query(`ALTER TABLE "cart_items" DROP CONSTRAINT "fk_cart_items_goods_id_goods"`)
+    await queryRunner.query(`ALTER TABLE "cart_items" DROP CONSTRAINT "fk_cart_items_user_id_users"`)
+    await queryRunner.query(`DROP TABLE "role_permissions"`)
+    await queryRunner.query(`DROP TABLE "permissions"`)
+    await queryRunner.query(`DROP TABLE "pages"`)
+    await queryRunner.query(`DROP TABLE "roles"`)
+    await queryRunner.query(`DROP TABLE "news_category_maps"`)
+    await queryRunner.query(`DROP TABLE "news_categories"`)
+    await queryRunner.query(`DROP TABLE "news"`)
+    await queryRunner.query(`DROP TABLE "banners"`)
+    await queryRunner.query(`DROP TABLE "goods_infos"`)
+    await queryRunner.query(`DROP TABLE "goods_imgs_maps"`)
+    await queryRunner.query(`DROP TABLE "goods_imgs"`)
+    await queryRunner.query(`DROP TABLE "goods_tags_maps"`)
+    await queryRunner.query(`DROP TABLE "goods_tags"`)
+    await queryRunner.query(`DROP TABLE "goods_category_maps"`)
+    await queryRunner.query(`DROP TABLE "goods_categories"`)
+    await queryRunner.query(`DROP TABLE "goods"`)
+    await queryRunner.query(`DROP TABLE "order_statuses"`)
+    await queryRunner.query(`DROP TABLE "order_items"`)
+    await queryRunner.query(`DROP TABLE "orders"`)
+    await queryRunner.query(`DROP TABLE "users"`)
+    await queryRunner.query(`DROP INDEX "public"."idx_cart_items_user_id"`)
+    await queryRunner.query(`DROP INDEX "public"."uq_cart_items_user_goods"`)
+    await queryRunner.query(`DROP TABLE "cart_items"`)
+  }
+}

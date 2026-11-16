@@ -1,0 +1,23 @@
+module.exports = {
+  ...require('./cart-item'),
+  ...require('./user'),
+  ...require('./order'),
+  ...require('./order-item'),
+  ...require('./order-status'),
+  ...require('./good'),
+  ...require('./goods-category'),
+  ...require('./goods-category-map'),
+  ...require('./goods-tag'),
+  ...require('./goods-tag-map'),
+  ...require('./goods-img'),
+  ...require('./goods-img-map'),
+  ...require('./goods-info'),
+  ...require('./banner'),
+  ...require('./news'),
+  ...require('./news-category'),
+  ...require('./news-category-map'),
+  ...require('./role'),
+  ...require('./page'),
+  ...require('./permission'),
+  ...require('./role-permission')
+}
