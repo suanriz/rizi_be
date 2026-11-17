@@ -4,7 +4,7 @@ Rizi Backend API 是 Rizi 電商網站的後端服務，提供會員註冊與登
 
 ## 選用技術
 
-- Node.js 26.x
+- Node.js 24.x
 - Express 5
 - JavaScript（CommonJS）
 - TypeORM
