@@ -1,0 +1,2584 @@
+{
+  "info": {
+    "_postman_id": "53941099-1c36-4cef-8a90-e0398ec483ab",
+    "name": "Rizi Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "39449148"
+  },
+  "item": [
+    {
+      "name": "身分驗證",
+      "item": [
+        {
+          "name": "會員註冊",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('registerEmail', `customer.${Date.now()}@example.com`);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP status is 201', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('customerToken', pm.response.json().data.token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{registerEmail}}\",\n  \"password\": \"{{customerPassword}}\",\n  \"name\": \"測試會員\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "register"
+              ]
+            },
+            "description": "建立 customer 帳號並發行 JWT。Email 會在送出前自動產生，方便重複測試。"
+          },
+          "response": [
+            {
+              "name": "201 註冊成功",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{registerEmail}}\",\n  \"password\": \"{{customerPassword}}\",\n  \"name\": \"測試會員\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "register"
+                  ]
+                },
+                "description": "建立 customer 帳號並發行 JWT。Email 會在送出前自動產生，方便重複測試。"
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"53bc6c9f-c2a6-4820-b6f0-646b776ccc11\",\n      \"email\": \"customer@example.com\",\n      \"name\": \"測試會員\",\n      \"accountType\": \"customer\"\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9.example\"\n  }\n}"
+            },
+            {
+              "name": "400 資料驗證失敗",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{registerEmail}}\",\n  \"password\": \"{{customerPassword}}\",\n  \"name\": \"測試會員\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "register"
+                  ]
+                },
+                "description": "建立 customer 帳號並發行 JWT。Email 會在送出前自動產生，方便重複測試。"
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid registration data\",\n  \"details\": [\n    {\n      \"field\": \"password\",\n      \"message\": \"Password must be between 8 and 72 characters\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "409 Email 已註冊",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{registerEmail}}\",\n  \"password\": \"{{customerPassword}}\",\n  \"name\": \"測試會員\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "register"
+                  ]
+                },
+                "description": "建立 customer 帳號並發行 JWT。Email 會在送出前自動產生，方便重複測試。"
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Email is already registered\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "前台會員登入",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP status is 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) { pm.collectionVariables.set('customerToken', pm.response.json().data.token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "login"
+              ]
+            },
+            "description": "僅允許 accountType=customer 登入；成功後自動保存 customerToken。"
+          },
+          "response": [
+            {
+              "name": "200 登入成功",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "login"
+                  ]
+                },
+                "description": "僅允許 accountType=customer 登入；成功後自動保存 customerToken。"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"53bc6c9f-c2a6-4820-b6f0-646b776ccc11\",\n      \"email\": \"customer@example.com\",\n      \"name\": \"測試會員\",\n      \"accountType\": \"customer\",\n      \"lastLoginAt\": \"2026-11-16T08:00:00.000Z\"\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9.example\"\n  }\n}"
+            },
+            {
+              "name": "400 資料驗證失敗",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "login"
+                  ]
+                },
+                "description": "僅允許 accountType=customer 登入；成功後自動保存 customerToken。"
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid login data\"\n}"
+            },
+            {
+              "name": "401 帳號或密碼錯誤",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "login"
+                  ]
+                },
+                "description": "僅允許 accountType=customer 登入；成功後自動保存 customerToken。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid email or password\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "後台人員登入",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP status is 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) { pm.collectionVariables.set('staffToken', pm.response.json().data.token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{staffEmail}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/staff/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "staff",
+                "login"
+              ]
+            },
+            "description": "僅允許 accountType=staff 登入；成功後自動保存 staffToken。"
+          },
+          "response": [
+            {
+              "name": "200 登入成功",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{staffEmail}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/staff/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "staff",
+                    "login"
+                  ]
+                },
+                "description": "僅允許 accountType=staff 登入；成功後自動保存 staffToken。"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"945c946f-8efb-46c0-8c84-64b6a701cd67\",\n      \"email\": \"staff@example.com\",\n      \"name\": \"後台人員\",\n      \"accountType\": \"staff\",\n      \"lastLoginAt\": \"2026-11-16T08:00:00.000Z\"\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9.example\"\n  }\n}"
+            },
+            {
+              "name": "400 資料驗證失敗",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{staffEmail}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/staff/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "staff",
+                    "login"
+                  ]
+                },
+                "description": "僅允許 accountType=staff 登入；成功後自動保存 staffToken。"
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid login data\"\n}"
+            },
+            {
+              "name": "401 帳號或密碼錯誤",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{staffEmail}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/staff/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "staff",
+                    "login"
+                  ]
+                },
+                "description": "僅允許 accountType=staff 登入；成功後自動保存 staffToken。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid email or password\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "前台商品（免登入）",
+      "item": [
+        {
+          "name": "取得商品清單",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goods?page={{page}}&pageSize={{pageSize}}&type={{goodsType}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goods"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "{{page}}",
+                  "description": "頁碼，最小 1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "{{pageSize}}",
+                  "description": "每頁筆數，1–100"
+                },
+                {
+                  "key": "type",
+                  "value": "{{goodsType}}",
+                  "description": "分類 ID；0 表示全部"
+                }
+              ]
+            },
+            "description": "只回傳商店清單頁需要的欄位，且僅包含上架商品。"
+          },
+          "response": []
+        },
+        {
+          "name": "取得商品詳細資料",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goods",
+                "{{goodsId}}"
+              ]
+            },
+            "description": "取得前台商品詳細頁資料。"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "取得前台商品詳細頁資料。"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"精品咖啡豆\",\n    \"link\": \"/store/1\",\n    \"img\": \"img/storeGoods/coffeeA\",\n    \"price\": 300,\n    \"onSale\": 280,\n    \"type\": 1,\n    \"tag\": [\n      1,\n      2\n    ],\n    \"detail\": {\n      \"imgs\": [\n        \"img/storeGoods/coffeeA\"\n      ],\n      \"features\": {\n        \"flavor\": \"花香、柑橘\",\n        \"flavorDetail\": \"明亮花香\",\n        \"roast\": \"淺焙\",\n        \"acidity\": \"4分\"\n      },\n      \"info\": [\n        \"內容成分：100% 咖啡豆\",\n        \"商品規格：0.5磅 / 包\"\n      ]\n    }\n  }\n}"
+            },
+            {
+              "name": "400 商品 ID 錯誤",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "取得前台商品詳細頁資料。"
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Goods id must be a positive integer\"\n}"
+            },
+            {
+              "name": "404 商品不存在",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "取得前台商品詳細頁資料。"
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Goods not found\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "後台商品（Staff Token）",
+      "item": [
+        {
+          "name": "新增商品",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('goodsId', pm.response.json().data.id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"衣索比亞精品咖啡豆\",\n  \"link\": \"/store/13\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goods",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goods"
+              ]
+            },
+            "description": "需要 staff JWT。成功後自動將新增 ID 保存到 goodsId。"
+          },
+          "response": [
+            {
+              "name": "201 新增成功",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"衣索比亞精品咖啡豆\",\n  \"link\": \"/store/13\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods"
+                  ]
+                },
+                "description": "需要 staff JWT。成功後自動將新增 ID 保存到 goodsId。"
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"success\",\n  \"code\": \"1\",\n  \"data\": {\n    \"id\": 13\n  }\n}"
+            },
+            {
+              "name": "400 資料驗證失敗",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"衣索比亞精品咖啡豆\",\n  \"link\": \"/store/13\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods"
+                  ]
+                },
+                "description": "需要 staff JWT。成功後自動將新增 ID 保存到 goodsId。"
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid goods data\",\n  \"details\": [\n    {\n      \"field\": \"otherImgs\",\n      \"message\": \"Exactly four valid image paths are required\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "401 未提供 Token",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"衣索比亞精品咖啡豆\",\n  \"link\": \"/store/13\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods"
+                  ]
+                },
+                "description": "需要 staff JWT。成功後自動將新增 ID 保存到 goodsId。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Authentication required\"\n}"
+            },
+            {
+              "name": "401 Token 無效或過期",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"衣索比亞精品咖啡豆\",\n  \"link\": \"/store/13\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods"
+                  ]
+                },
+                "description": "需要 staff JWT。成功後自動將新增 ID 保存到 goodsId。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid or expired token\"\n}"
+            },
+            {
+              "name": "403 非 Staff 帳號",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"衣索比亞精品咖啡豆\",\n  \"link\": \"/store/13\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods"
+                  ]
+                },
+                "description": "需要 staff JWT。成功後自動將新增 ID 保存到 goodsId。"
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Staff access required\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "修改商品",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"更新後的精品咖啡豆\",\n  \"link\": \"/store/{{goodsId}}\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goods",
+                "{{goodsId}}"
+              ]
+            },
+            "description": "需要 staff JWT。請傳入完整商品資料；可將 status 設為 0 進行下架。"
+          },
+          "response": [
+            {
+              "name": "200 修改成功",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"更新後的精品咖啡豆\",\n  \"link\": \"/store/{{goodsId}}\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "需要 staff JWT。請傳入完整商品資料；可將 status 設為 0 進行下架。"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"success\",\n  \"code\": \"1\",\n  \"data\": {\n    \"id\": 1\n  }\n}"
+            },
+            {
+              "name": "400 資料驗證失敗",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"更新後的精品咖啡豆\",\n  \"link\": \"/store/{{goodsId}}\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "需要 staff JWT。請傳入完整商品資料；可將 status 設為 0 進行下架。"
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid goods data\"\n}"
+            },
+            {
+              "name": "401 未提供 Token",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"更新後的精品咖啡豆\",\n  \"link\": \"/store/{{goodsId}}\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "需要 staff JWT。請傳入完整商品資料；可將 status 設為 0 進行下架。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Authentication required\"\n}"
+            },
+            {
+              "name": "401 Token 無效或過期",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"更新後的精品咖啡豆\",\n  \"link\": \"/store/{{goodsId}}\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "需要 staff JWT。請傳入完整商品資料；可將 status 設為 0 進行下架。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid or expired token\"\n}"
+            },
+            {
+              "name": "403 非 Staff 帳號",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"更新後的精品咖啡豆\",\n  \"link\": \"/store/{{goodsId}}\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "需要 staff JWT。請傳入完整商品資料；可將 status 設為 0 進行下架。"
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Staff access required\"\n}"
+            },
+            {
+              "name": "404 商品不存在",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"更新後的精品咖啡豆\",\n  \"link\": \"/store/{{goodsId}}\",\n  \"price\": 300,\n  \"onSale\": 280,\n  \"category\": 1,\n  \"tag\": [\n    1,\n    2\n  ],\n  \"cover\": \"/storeGoods/coffeeA.jpg\",\n  \"otherImgs\": [\n    \"/storeGoods/coffeeB.jpg\",\n    \"/storeGoods/coffeeC.jpg\",\n    \"/storeGoods/coffeeD.jpg\",\n    \"/storeGoods/coffeeE.jpg\"\n  ],\n  \"status\": 1,\n  \"flavor\": \"花香、柑橘\",\n  \"flavorDetail\": \"明亮花香與柑橘甜感\",\n  \"roast\": \"淺焙\",\n  \"acidity\": 4,\n  \"info\": \"內容成分：100% 咖啡豆\\n商品規格：0.5磅 / 包\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "需要 staff JWT。請傳入完整商品資料；可將 status 設為 0 進行下架。"
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Goods not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "刪除商品",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goods",
+                "{{goodsId}}"
+              ]
+            },
+            "description": "商品不可實體刪除，固定回傳 409；請改用修改商品 API 將 status 設為 0 下架。"
+          },
+          "response": [
+            {
+              "name": "401 未提供 Token",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "商品不可實體刪除，固定回傳 409；請改用修改商品 API 將 status 設為 0 下架。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Authentication required\"\n}"
+            },
+            {
+              "name": "401 Token 無效或過期",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "商品不可實體刪除，固定回傳 409；請改用修改商品 API 將 status 設為 0 下架。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid or expired token\"\n}"
+            },
+            {
+              "name": "403 非 Staff 帳號",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "商品不可實體刪除，固定回傳 409；請改用修改商品 API 將 status 設為 0 下架。"
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Staff access required\"\n}"
+            },
+            {
+              "name": "404 商品不存在",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "商品不可實體刪除，固定回傳 409；請改用修改商品 API 將 status 設為 0 下架。"
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Goods not found\"\n}"
+            },
+            {
+              "name": "409 不允許刪除",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/goods/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "goods",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "商品不可實體刪除，固定回傳 409；請改用修改商品 API 將 status 設為 0 下架。"
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Goods cannot be deleted; set status to disabled instead\"\n}"
+            }
+          ]
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{staffToken}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "會員購物車（Customer Token）",
+      "item": [
+        {
+          "name": "查看購物車",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart"
+              ]
+            },
+            "description": "取得目前登入會員的購物車。"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart"
+                  ]
+                },
+                "description": "取得目前登入會員的購物車。"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"items\": [\n      {\n        \"id\": 1,\n        \"name\": \"精品咖啡豆\",\n        \"link\": \"/store/1\",\n        \"img\": \"img/storeGoods/coffeeA\",\n        \"price\": 300,\n        \"onSale\": 280,\n        \"type\": 1,\n        \"tag\": [\n          1,\n          2\n        ],\n        \"count\": 2,\n        \"checked\": true\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "401 未提供 Token",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart"
+                  ]
+                },
+                "description": "取得目前登入會員的購物車。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Authentication required\"\n}"
+            },
+            {
+              "name": "401 Token 無效或過期",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart"
+                  ]
+                },
+                "description": "取得目前登入會員的購物車。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid or expired token\"\n}"
+            },
+            {
+              "name": "403 非 Customer 帳號",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart"
+                  ]
+                },
+                "description": "取得目前登入會員的購物車。"
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Customer access required\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "加入購物車",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"goodsId\": \"{{goodsId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "items"
+              ]
+            },
+            "description": "加入商品；重複加入時數量加 1，最大 999。"
+          },
+          "response": [
+            {
+              "name": "200 加入成功",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"goodsId\": \"{{goodsId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items"
+                  ]
+                },
+                "description": "加入商品；重複加入時數量加 1，最大 999。"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"goodsId\": 1,\n    \"count\": 1\n  }\n}"
+            },
+            {
+              "name": "400 商品 ID 錯誤",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"goodsId\": \"{{goodsId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items"
+                  ]
+                },
+                "description": "加入商品；重複加入時數量加 1，最大 999。"
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Goods id must be a positive integer\"\n}"
+            },
+            {
+              "name": "401 未提供 Token",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"goodsId\": \"{{goodsId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items"
+                  ]
+                },
+                "description": "加入商品；重複加入時數量加 1，最大 999。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Authentication required\"\n}"
+            },
+            {
+              "name": "401 Token 無效或過期",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"goodsId\": \"{{goodsId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items"
+                  ]
+                },
+                "description": "加入商品；重複加入時數量加 1，最大 999。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid or expired token\"\n}"
+            },
+            {
+              "name": "403 非 Customer 帳號",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"goodsId\": \"{{goodsId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items"
+                  ]
+                },
+                "description": "加入商品；重複加入時數量加 1，最大 999。"
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Customer access required\"\n}"
+            },
+            {
+              "name": "404 商品不存在或已下架",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"goodsId\": \"{{goodsId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items"
+                  ]
+                },
+                "description": "加入商品；重複加入時數量加 1，最大 999。"
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Goods not found or unavailable\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "調整購物車數量",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"count\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "items",
+                "{{goodsId}}"
+              ]
+            },
+            "description": "將指定商品數量設定為 1–999。"
+          },
+          "response": [
+            {
+              "name": "200 修改成功",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"count\": 3\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "將指定商品數量設定為 1–999。"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"goodsId\": 1,\n    \"count\": 3\n  }\n}"
+            },
+            {
+              "name": "400 數量錯誤",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"count\": 3\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "將指定商品數量設定為 1–999。"
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Cart item count must be an integer between 1 and 999\"\n}"
+            },
+            {
+              "name": "401 未提供 Token",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"count\": 3\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "將指定商品數量設定為 1–999。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Authentication required\"\n}"
+            },
+            {
+              "name": "401 Token 無效或過期",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"count\": 3\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "將指定商品數量設定為 1–999。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid or expired token\"\n}"
+            },
+            {
+              "name": "403 非 Customer 帳號",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"count\": 3\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "將指定商品數量設定為 1–999。"
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Customer access required\"\n}"
+            },
+            {
+              "name": "404 購物車項目不存在",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"count\": 3\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "將指定商品數量設定為 1–999。"
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Cart item not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "移除購物車商品",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "items",
+                "{{goodsId}}"
+              ]
+            },
+            "description": "從目前會員購物車移除指定商品。"
+          },
+          "response": [
+            {
+              "name": "204 移除成功",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "從目前會員購物車移除指定商品。"
+              },
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "401 未提供 Token",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "從目前會員購物車移除指定商品。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Authentication required\"\n}"
+            },
+            {
+              "name": "401 Token 無效或過期",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "從目前會員購物車移除指定商品。"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Invalid or expired token\"\n}"
+            },
+            {
+              "name": "403 非 Customer 帳號",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "從目前會員購物車移除指定商品。"
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Customer access required\"\n}"
+            },
+            {
+              "name": "404 購物車項目不存在",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/cart/items/{{goodsId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "cart",
+                    "items",
+                    "{{goodsId}}"
+                  ]
+                },
+                "description": "從目前會員購物車移除指定商品。"
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"failed\",\n  \"message\": \"Cart item not found\"\n}"
+            }
+          ]
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{customerToken}}",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5050"
+    },
+    {
+      "key": "registerEmail",
+      "value": "customer@example.com"
+    },
+    {
+      "key": "customerEmail",
+      "value": "customer@example.com"
+    },
+    {
+      "key": "customerPassword",
+      "value": "password123"
+    },
+    {
+      "key": "staffEmail",
+      "value": "staff@example.com"
+    },
+    {
+      "key": "staffPassword",
+      "value": "password123"
+    },
+    {
+      "key": "customerToken",
+      "value": ""
+    },
+    {
+      "key": "staffToken",
+      "value": ""
+    },
+    {
+      "key": "page",
+      "value": "1"
+    },
+    {
+      "key": "pageSize",
+      "value": "8"
+    },
+    {
+      "key": "goodsType",
+      "value": "0"
+    },
+    {
+      "key": "goodsId",
+      "value": "1"
+    }
+  ]
+}
