@@ -17,7 +17,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.collectionVariables.set('registerEmail', `customer.${Date.now()}@example.com`);"
+                  "pm.collectionVariables.set('registerEmail', 'gggg@com.rw');"
                 ]
               }
             },
@@ -2534,27 +2534,27 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:5050"
+      "value": "https://rizi-be.onrender.com"
     },
     {
       "key": "registerEmail",
-      "value": "customer@example.com"
+      "value": "gggg@com.rw"
     },
     {
       "key": "customerEmail",
-      "value": "customer@example.com"
+      "value": "gggg@com.rw"
     },
     {
       "key": "customerPassword",
-      "value": "password123"
+      "value": "223dsadda"
     },
     {
       "key": "staffEmail",
-      "value": "staff@example.com"
+      "value": "adminN@rizi.com"
     },
     {
       "key": "staffPassword",
-      "value": "password123"
+      "value": "coMrIziCom21"
     },
     {
       "key": "customerToken",
