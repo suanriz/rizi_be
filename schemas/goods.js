@@ -18,6 +18,7 @@ const validateGoodsListQuery = (query) => {
   const page = query.page === undefined ? 1 : Number(query.page)
   const pageSize = query.pageSize === undefined ? 8 : Number(query.pageSize)
   const type = query.type === undefined || Number(query.type) === 0 ? null : Number(query.type)
+  const keyword = typeof query.keyword === 'string' ? query.keyword.trim() : ''
 
   if (!Number.isInteger(page) || page < 1) {
     throw appError(400, 'Page must be a positive integer')
@@ -28,8 +29,11 @@ const validateGoodsListQuery = (query) => {
   if (type !== null && (!Number.isInteger(type) || type < 1)) {
     throw appError(400, 'Type must be a positive integer')
   }
+  if (keyword.length > 50) {
+    throw appError(400, 'Keyword must be at most 50 characters')
+  }
 
-  return { page, pageSize, type }
+  return { page, pageSize, type, keyword }
 }
 
 const validateGoodsInput = (body) => {

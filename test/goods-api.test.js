@@ -42,12 +42,12 @@ test('public goods list and detail do not require authentication', async () => {
     getDetail: async (id) => ({ id, name: 'Coffee' })
   }
   await withServer(goodsService, async (baseUrl) => {
-    const listResponse = await fetch(`${baseUrl}/api/v1/goods?page=2&pageSize=6&type=1`)
+    const listResponse = await fetch(`${baseUrl}/api/v1/goods?page=2&pageSize=6&type=1&keyword=Coffee`)
     const detailResponse = await fetch(`${baseUrl}/api/v1/goods/3`)
     const listBody = await listResponse.json()
 
     assert.equal(listResponse.status, 200)
-    assert.deepEqual(listBody.data.query, { page: 2, pageSize: 6, type: 1 })
+    assert.deepEqual(listBody.data.query, { page: 2, pageSize: 6, type: 1, keyword: 'Coffee' })
     assert.equal(detailResponse.status, 200)
   })
 })

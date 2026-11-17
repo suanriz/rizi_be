@@ -1,9 +1,10 @@
 const { dataSource } = require('../db/data-source')
 
 const goodsRepository = {
-  async findPublicList ({ type, page, pageSize }) {
+  async findPublicList ({ type, page, pageSize, keyword = '' }) {
     const offset = (page - 1) * pageSize
-    const params = [type, pageSize, offset]
+    const escapedKeyword = keyword.replace(/[\\%_]/g, '\\$&')
+    const params = [type, escapedKeyword, pageSize, offset]
     const [list, countRows] = await Promise.all([
       dataSource.query(`
         SELECT g.id, g.name, g.link, g.price, g.sale,
@@ -15,17 +16,21 @@ const goodsRepository = {
         INNER JOIN goods_imgs_maps cover_map ON cover_map.goods_id = g.id AND cover_map.cover = true
         INNER JOIN goods_imgs cover_img ON cover_img.id = cover_map.goods_imgs_id
         LEFT JOIN goods_tags_maps gtm ON gtm.goods_id = g.id
-        WHERE g.status = true AND ($1::integer IS NULL OR gcm.category_id = $1)
+        WHERE g.status = true
+          AND ($1::integer IS NULL OR gcm.category_id = $1)
+          AND ($2 = '' OR g.name ILIKE '%' || $2 || '%' ESCAPE '\\')
         GROUP BY g.id, gcm.category_id, cover_img.path
         ORDER BY g.id ASC
-        LIMIT $2 OFFSET $3
+        LIMIT $3 OFFSET $4
       `, params),
       dataSource.query(`
         SELECT COUNT(DISTINCT g.id)::integer AS total
         FROM goods g
         INNER JOIN goods_category_maps gcm ON gcm.goods_id = g.id
-        WHERE g.status = true AND ($1::integer IS NULL OR gcm.category_id = $1)
-      `, [type])
+        WHERE g.status = true
+          AND ($1::integer IS NULL OR gcm.category_id = $1)
+          AND ($2 = '' OR g.name ILIKE '%' || $2 || '%' ESCAPE '\\')
+      `, [type, escapedKeyword])
     ])
     return { list, total: countRows[0].total }
   },

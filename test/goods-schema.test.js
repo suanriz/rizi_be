@@ -20,9 +20,10 @@ const validGoodsBody = {
 }
 
 test('goods list query applies pagination defaults and validates bounds', () => {
-  assert.deepEqual(validateGoodsListQuery({}), { page: 1, pageSize: 8, type: null })
-  assert.deepEqual(validateGoodsListQuery({ page: '2', pageSize: '6', type: '3' }), { page: 2, pageSize: 6, type: 3 })
+  assert.deepEqual(validateGoodsListQuery({}), { page: 1, pageSize: 8, type: null, keyword: '' })
+  assert.deepEqual(validateGoodsListQuery({ page: '2', pageSize: '6', type: '3', keyword: '  Coffee  ' }), { page: 2, pageSize: 6, type: 3, keyword: 'Coffee' })
   assert.throws(() => validateGoodsListQuery({ pageSize: '101' }), (err) => err.statusCode === 400)
+  assert.throws(() => validateGoodsListQuery({ keyword: 'a'.repeat(51) }), (err) => err.statusCode === 400)
 })
 
 test('goods input maps admin fields, removes duplicate tags and excludes stock', () => {
